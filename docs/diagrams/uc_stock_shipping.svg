@@ -1,0 +1,28 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='760' height='506' viewBox='0 0 760 506'>
+  <rect width='760' height='506' fill='#fff'/>
+  <text x='380' y='34.3' font-family='Segoe UI, Arial, sans-serif' font-size='18' font-weight='700' fill='#1E5B3E' text-anchor='middle'>Feature: Stock and shipments</text>
+  <rect x='170' y='70' width='420' height='416' rx='14' fill='#F7F2E8' stroke='#1E5B3E' stroke-width='1.5'/>
+  <text x='182' y='88' font-family='Segoe UI, Arial, sans-serif' font-size='11.5' fill='#5B6670' font-style='italic'>Mehnaty system</text>
+  <line x1='97' y1='270' x2='262.4' y2='123' stroke='#8A9A92' stroke-width='1.3'/><line x1='97' y1='270' x2='262.4' y2='189' stroke='#8A9A92' stroke-width='1.3'/><line x1='97' y1='270' x2='262.4' y2='255' stroke='#8A9A92' stroke-width='1.3'/><line x1='97' y1='270' x2='262.4' y2='321' stroke='#8A9A92' stroke-width='1.3'/><line x1='97' y1='270' x2='262.4' y2='387' stroke='#8A9A92' stroke-width='1.3'/><line x1='663' y1='138' x2='497.6' y2='123' stroke='#8A9A92' stroke-width='1.3'/><line x1='663' y1='138' x2='497.6' y2='189' stroke='#8A9A92' stroke-width='1.3'/><line x1='663' y1='138' x2='497.6' y2='255' stroke='#8A9A92' stroke-width='1.3'/><line x1='663' y1='138' x2='497.6' y2='321' stroke='#8A9A92' stroke-width='1.3'/><line x1='663' y1='138' x2='497.6' y2='387' stroke='#8A9A92' stroke-width='1.3'/><line x1='663' y1='270' x2='497.6' y2='453' stroke='#8A9A92' stroke-width='1.3'/><line x1='663' y1='402' x2='497.6' y2='387' stroke='#7A5C2E' stroke-width='1.3' stroke-dasharray='5 4'/><ellipse cx='380' cy='123' rx='120' ry='25' fill='#E6F0EA' stroke='#1E5B3E' stroke-width='1.5'/><text x='380' y='127.375' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='400' fill='#1F2933' text-anchor='middle'>Add or remove stock</text><ellipse cx='380' cy='189' rx='120' ry='25' fill='#E6F0EA' stroke='#1E5B3E' stroke-width='1.5'/><text x='380' y='193.375' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='400' fill='#1F2933' text-anchor='middle'>See stock movement history</text><ellipse cx='380' cy='255' rx='120' ry='25' fill='#E6F0EA' stroke='#1E5B3E' stroke-width='1.5'/><text x='380' y='259.375' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='400' fill='#1F2933' text-anchor='middle'>Get low-stock alert</text><ellipse cx='380' cy='321' rx='120' ry='25' fill='#E6F0EA' stroke='#1E5B3E' stroke-width='1.5'/><text x='380' y='317.875' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='400' fill='#1F2933' text-anchor='middle'>Record shipment (carrier,</text><text x='380' y='332.875' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='400' fill='#1F2933' text-anchor='middle'>tracking)</text><ellipse cx='380' cy='387' rx='120' ry='25' fill='#E6F0EA' stroke='#1E5B3E' stroke-width='1.5'/><text x='380' y='391.375' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='400' fill='#1F2933' text-anchor='middle'>Update shipment status</text><ellipse cx='380' cy='453' rx='120' ry='25' fill='#E6F0EA' stroke='#1E5B3E' stroke-width='1.5'/><text x='380' y='457.375' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='400' fill='#1F2933' text-anchor='middle'>Follow shipment history</text>
+  <g stroke='#1E5B3E' stroke-width='2.2' fill='none'>
+    <circle cx='75' cy='248' r='10' fill='#fff'/>
+    <line x1='75' y1='258' x2='75' y2='284'/>
+    <line x1='59' y1='268' x2='91' y2='268'/>
+    <line x1='75' y1='284' x2='63' y2='304'/>
+    <line x1='75' y1='284' x2='87' y2='304'/></g><text x='75' y='320.875' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='600' fill='#1E5B3E' text-anchor='middle'>Home-business</text><text x='75' y='335.875' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='600' fill='#1E5B3E' text-anchor='middle'>owner</text><g stroke='#1E5B3E' stroke-width='2.2' fill='none'>
+    <circle cx='685' cy='116' r='10' fill='#fff'/>
+    <line x1='685' y1='126' x2='685' y2='152'/>
+    <line x1='669' y1='136' x2='701' y2='136'/>
+    <line x1='685' y1='152' x2='673' y2='172'/>
+    <line x1='685' y1='152' x2='697' y2='172'/></g><text x='685' y='196.375' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='600' fill='#1E5B3E' text-anchor='middle'>Supplier</text><g stroke='#1E5B3E' stroke-width='2.2' fill='none'>
+    <circle cx='685' cy='248' r='10' fill='#fff'/>
+    <line x1='685' y1='258' x2='685' y2='284'/>
+    <line x1='669' y1='268' x2='701' y2='268'/>
+    <line x1='685' y1='284' x2='673' y2='304'/>
+    <line x1='685' y1='284' x2='697' y2='304'/></g><text x='685' y='328.375' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='600' fill='#1E5B3E' text-anchor='middle'>Customer / buyer</text><g stroke='#7A5C2E' stroke-width='2.2' fill='none' stroke-dasharray='4 3'>
+    <circle cx='685' cy='380' r='10' fill='#fff'/>
+    <line x1='685' y1='390' x2='685' y2='416'/>
+    <line x1='669' y1='400' x2='701' y2='400'/>
+    <line x1='685' y1='416' x2='673' y2='436'/>
+    <line x1='685' y1='416' x2='697' y2='436'/></g><text x='685' y='452.875' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='600' fill='#7A5C2E' text-anchor='middle'>Delivery company</text><text x='685' y='467.875' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='600' fill='#7A5C2E' text-anchor='middle'>(future)</text>
+</svg>

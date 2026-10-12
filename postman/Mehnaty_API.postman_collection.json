@@ -1,0 +1,2489 @@
+{
+  "info": {
+    "name": "Mehnaty API",
+    "description": "All Mehnaty backend endpoints (Django REST API).\n\nHow to use:\n1. Start the app (start.bat). Note the API port it prints.\n2. Import this collection and the \"Mehnaty Local\" environment. Set baseUrl (default http://localhost:8000/api).\n3. Run \"Auth > Login\" first. It saves the access/refresh tokens automatically; every other request uses them.\n4. Change the IDs in the URLs/bodies (offer_id, order id, ...) to IDs that exist in your database.\n\nDemo accounts (only after start.bat -Demo): customer@demo.mehnaty.test, embroidery@demo.mehnaty.test (business), supplier@demo.mehnaty.test, admin@demo.mehnaty.test. Password: DEMO_PASSWORD in backend/core/management/commands/seed_demo.py.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api"
+    },
+    {
+      "key": "email",
+      "value": "customer@demo.mehnaty.test"
+    },
+    {
+      "key": "password",
+      "value": ""
+    },
+    {
+      "key": "access",
+      "value": ""
+    },
+    {
+      "key": "refresh",
+      "value": ""
+    },
+    {
+      "key": "addressId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Quick check (read-only)",
+      "description": "Safe requests to confirm the API works. They do not change data.",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health",
+                ""
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('ok', () => pm.expect(pm.response.json().status).to.eql('ok'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cities and areas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cities/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cities",
+                ""
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Categories (offers)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/?kind=offer",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "kind",
+                  "value": "offer"
+                }
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Browse offers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/offers/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "offers",
+                ""
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "AI status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ai/status/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ai",
+                "status",
+                ""
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "1. Auth",
+      "description": "Register, login and account. Login saves tokens into collection variables.",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register",
+                ""
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"new.user@example.test\",\n  \"password\": \"StrongPass-2026\",\n  \"full_name\": \"New User\",\n  \"phone\": \"0590000000\",\n  \"city\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "const d = pm.response.json();",
+                  "if (d.access) pm.collectionVariables.set('access', d.access);",
+                  "if (d.refresh) pm.collectionVariables.set('refresh', d.refresh);",
+                  "pm.test('tokens received', () => pm.expect(d.access).to.be.a('string'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login",
+                ""
+              ]
+            },
+            "description": "Set the collection variables \"email\" and \"password\" first.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const d = pm.response.json();",
+                  "if (d.access) pm.collectionVariables.set('access', d.access);",
+                  "if (d.refresh) pm.collectionVariables.set('refresh', d.refresh);",
+                  "pm.test('tokens received', () => pm.expect(d.access).to.be.a('string'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh",
+                ""
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"{{refresh}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const d = pm.response.json();",
+                  "if (d.access) pm.collectionVariables.set('access', d.access);",
+                  "if (d.refresh) pm.collectionVariables.set('refresh', d.refresh);",
+                  "pm.test('tokens received', () => pm.expect(d.access).to.be.a('string'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Me (my account)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update my account",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"New Name\",\n  \"phone\": \"0590000001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Change password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-password",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"old_password\": \"old\",\n  \"new_password\": \"NewStrongPass-2026\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"{{refresh}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Browse and search (public)",
+      "description": "No login needed.",
+      "item": [
+        {
+          "name": "Search offers (all filters)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/offers/?q=تطريز&category=&city=&area=&min_price=&max_price=100&min_rating=&max_prep_days=4&offer_type=&available=1&delivery=&ordering=price",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "offers",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "تطريز"
+                },
+                {
+                  "key": "category",
+                  "value": ""
+                },
+                {
+                  "key": "city",
+                  "value": ""
+                },
+                {
+                  "key": "area",
+                  "value": ""
+                },
+                {
+                  "key": "min_price",
+                  "value": ""
+                },
+                {
+                  "key": "max_price",
+                  "value": "100"
+                },
+                {
+                  "key": "min_rating",
+                  "value": ""
+                },
+                {
+                  "key": "max_prep_days",
+                  "value": "4"
+                },
+                {
+                  "key": "offer_type",
+                  "value": ""
+                },
+                {
+                  "key": "available",
+                  "value": "1"
+                },
+                {
+                  "key": "delivery",
+                  "value": ""
+                },
+                {
+                  "key": "ordering",
+                  "value": "price"
+                }
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Offer details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/offers/1/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "offers",
+                "1",
+                ""
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Compare offers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/offers/compare/?ids=1,2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "offers",
+                "compare",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "1,2"
+                }
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Businesses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/businesses/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "businesses",
+                ""
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Business details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/businesses/1/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "businesses",
+                "1",
+                ""
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Business reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reviews/?business=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reviews",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "business",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Suppliers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/suppliers/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "suppliers",
+                ""
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Search materials",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/materials/?q=قماش&unit=meter&max_price=&ordering=price",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materials",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "قماش"
+                },
+                {
+                  "key": "unit",
+                  "value": "meter"
+                },
+                {
+                  "key": "max_price",
+                  "value": ""
+                },
+                {
+                  "key": "ordering",
+                  "value": "price"
+                }
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Material details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/materials/1/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materials",
+                "1",
+                ""
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Compare materials",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/materials/compare/?ids=1,2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "materials",
+                "compare",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "1,2"
+                }
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Customer",
+      "description": "Login as a customer first.",
+      "item": [
+        {
+          "name": "My addresses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/addresses/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "addresses",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Add address",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/addresses/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "addresses",
+                ""
+              ]
+            },
+            "description": "Street-level parts are optional, but at least one of street / landmark / details is required. latitude+longitude form an optional exact map pin (both or neither; stored rounded to 6 decimals). Response includes full_text and map_url.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"Workshop\",\n  \"recipient_name\": \"Sara\",\n  \"phone\": \"0590000000\",\n  \"city\": 1,\n  \"area\": null,\n  \"street\": \"Rafidia Street\",\n  \"building\": \"12\",\n  \"floor\": \"3\",\n  \"apartment\": \"5\",\n  \"landmark\": \"Opposite the girls school\",\n  \"details\": \"Green door\",\n  \"latitude\": 32.2211,\n  \"longitude\": 35.2544\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) { pm.collectionVariables.set('addressId', pm.response.json().id); }",
+                  "pm.test('address created with map link', () => { pm.response.to.have.status(201); pm.expect(pm.response.json().map_url).to.include('google.com/maps'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update address (move pin / change floor)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/addresses/{{addressId}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "addresses",
+                "{{addressId}}",
+                ""
+              ]
+            },
+            "description": "Send latitude:null and longitude:null to remove the pin. Existing orders keep their own copy of the address.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"floor\": \"4\",\n  \"latitude\": 32.2227,\n  \"longitude\": 35.2621\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Create sales order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sales-orders/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sales-orders",
+                ""
+              ]
+            },
+            "description": "fulfillment: pickup | delivery (delivery needs address_id). All items must belong to one business.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"offer_id\": 1,\n      \"quantity\": 1\n    }\n  ],\n  \"fulfillment\": \"pickup\",\n  \"address_id\": null,\n  \"notes\": \"\",\n  \"requested_date\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "My orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sales-orders/?role=customer",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sales-orders",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "role",
+                  "value": "customer"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Order details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sales-orders/1/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sales-orders",
+                "1",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Cancel order (only while pending)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sales-orders/1/transition/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sales-orders",
+                "1",
+                "transition",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"cancelled\",\n  \"note\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Review a completed order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reviews/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reviews",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order\": 1,\n  \"rating\": 5,\n  \"comment\": \"Great work\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Report content",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/abuse-reports/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "abuse-reports",
+                ""
+              ]
+            },
+            "description": "target_type: review | offer | business | material | supplier",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"target_type\": \"review\",\n  \"target_id\": 1,\n  \"reason\": \"Offensive text\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Unread count",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/unread_count/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "unread_count",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Mark all read",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/read_all/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "read_all",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "My shipments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/shipments/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shipments",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Home-business owner",
+      "description": "Login as a business owner first.",
+      "item": [
+        {
+          "name": "My business profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/my/business/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "business",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Create business profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/my/business/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "business",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Kitchen\",\n  \"description\": \"Home food\",\n  \"category\": 1,\n  \"city\": 1,\n  \"area\": null,\n  \"public_phone\": \"0590000000\",\n  \"public_whatsapp\": \"\",\n  \"contact_consent\": false,\n  \"working_hours\": \"Sat-Thu 9-18\",\n  \"pickup_available\": true,\n  \"delivery_available\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update business profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/my/business/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "business",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"working_hours\": \"Sat-Thu 10-20\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Upload logo",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/my/business/logo/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "business",
+                "logo",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "JPEG/PNG/WEBP, max 5 MB"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add work image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/my/business/images/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "business",
+                "images",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "JPEG/PNG/WEBP, max 5 MB"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "My offers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/my/offers/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "offers",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Create offer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/my/offers/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "offers",
+                ""
+              ]
+            },
+            "description": "offer_type: ready (has stock) | made_to_order | service",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Embroidered pillow\",\n  \"description\": \"Hand made\",\n  \"category\": 1,\n  \"offer_type\": \"ready\",\n  \"price\": \"80.00\",\n  \"price_unit\": \"للقطعة\",\n  \"unit_cost\": \"30.00\",\n  \"preparation_days\": 0,\n  \"service_duration\": \"\",\n  \"is_available\": true,\n  \"low_stock_threshold\": 2,\n  \"initial_stock\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update offer",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/my/offers/1/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "offers",
+                "1",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": \"85.00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete offer (soft delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/my/offers/1/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "offers",
+                "1",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Add offer image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/my/offers/1/images/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "offers",
+                "1",
+                "images",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "JPEG/PNG/WEBP, max 5 MB"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Adjust stock",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/my/offers/1/stock/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "offers",
+                "1",
+                "stock",
+                ""
+              ]
+            },
+            "description": "Positive adds, negative removes.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"delta\": \"3\",\n  \"note\": \"New batch\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Stock movements",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/my/offers/1/movements/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "offers",
+                "1",
+                "movements",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Low-stock items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/inventory/low-stock/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventory",
+                "low-stock",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Incoming customer orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sales-orders/?role=business&status=pending",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sales-orders",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "role",
+                  "value": "business"
+                },
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Accept order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sales-orders/1/transition/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sales-orders",
+                "1",
+                "transition",
+                ""
+              ]
+            },
+            "description": "Next: preparing -> ready -> completed (pickup) or in_transit -> completed (delivery). Or rejected / cancelled.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"accepted\",\n  \"note\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Set delivery terms",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sales-orders/1/delivery/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sales-orders",
+                "1",
+                "delivery",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"delivery_fee\": \"15.00\",\n  \"delivery_payer\": \"buyer\",\n  \"delivery_fee_is_final\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Carriers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/carriers/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carriers",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Create shipment (manual)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/shipments/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shipments",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kind\": \"sales\",\n  \"order_id\": 1,\n  \"carrier_id\": null,\n  \"carrier_name\": \"Local courier\",\n  \"tracking_number\": \"TRK123\",\n  \"cost\": \"15.00\",\n  \"cost_is_final\": false,\n  \"estimated_arrival\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update shipment status",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/shipments/1/update_status/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shipments",
+                "1",
+                "update_status",
+                ""
+              ]
+            },
+            "description": "status: created | picked_up | in_transit | delivered | failed | returned",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"in_transit\",\n  \"note\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Retry carrier",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/shipments/1/retry/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shipments",
+                "1",
+                "retry",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Buy raw materials (purchase order)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/purchase-orders/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "purchase-orders",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"material_id\": 1,\n      \"quantity\": \"5\"\n    }\n  ],\n  \"fulfillment\": \"pickup\",\n  \"address_id\": null,\n  \"notes\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "My purchase orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/purchase-orders/?role=buyer",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "purchase-orders",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "role",
+                  "value": "buyer"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Confirm received",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/purchase-orders/1/transition/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "purchase-orders",
+                "1",
+                "transition",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"received\",\n  \"note\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Expenses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/expenses/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "expenses",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Add expense",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/expenses/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "expenses",
+                ""
+              ]
+            },
+            "description": "category: packaging | delivery | commission | materials_used | other",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-10-12\",\n  \"category\": \"packaging\",\n  \"amount\": \"20.00\",\n  \"note\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Business report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reports/business/?period=month",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "business",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "period: day | week | month, or use from=YYYY-MM-DD&to=YYYY-MM-DD"
+          }
+        },
+        {
+          "name": "AI marketing draft",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ai/marketing-draft/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ai",
+                "marketing-draft",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"offer_id\": 1,\n  \"extra_facts\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "AI business summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ai/business-summary/?period=week",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ai",
+                "business-summary",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "week"
+                }
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Supplier",
+      "description": "Login as a supplier first.",
+      "item": [
+        {
+          "name": "My supplier profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/my/supplier/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "supplier",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Create supplier profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/my/supplier/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "supplier",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Fabric Store\",\n  \"description\": \"\",\n  \"city\": 1,\n  \"area\": null,\n  \"public_phone\": \"\",\n  \"contact_consent\": false,\n  \"pickup_available\": true,\n  \"delivery_available\": true,\n  \"delivery_cost\": \"20.00\",\n  \"delivery_days\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "My materials",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/my/materials/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "materials",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Create material",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/my/materials/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "materials",
+                ""
+              ]
+            },
+            "description": "unit: piece | meter | kg | gram | pack | roll | liter | box. category must be a material category.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Cotton fabric\",\n  \"description\": \"\",\n  \"specifications\": \"Width 150 cm\",\n  \"category\": 9,\n  \"unit\": \"meter\",\n  \"price\": \"12.00\",\n  \"min_order_quantity\": \"2\",\n  \"preparation_days\": 1,\n  \"low_stock_threshold\": \"10\",\n  \"is_available\": true,\n  \"initial_stock\": \"100\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Adjust material stock",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/my/materials/1/stock/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "my",
+                "materials",
+                "1",
+                "stock",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"delta\": \"50\",\n  \"note\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Incoming purchase orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/purchase-orders/?role=supplier",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "purchase-orders",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "role",
+                  "value": "supplier"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Accept purchase order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/purchase-orders/1/transition/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "purchase-orders",
+                "1",
+                "transition",
+                ""
+              ]
+            },
+            "description": "Next: preparing -> shipped. Or rejected / cancelled.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"accepted\",\n  \"note\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Supplier report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reports/supplier/?period=month",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "supplier",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Smart assistant (AI)",
+      "description": "Works without an API key (built-in rules).",
+      "item": [
+        {
+          "name": "Smart search (offers)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ai/search/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ai",
+                "search",
+                ""
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"أريد هدية مطرزة بأقل من 100 شيكل وتكون جاهزة خلال أربعة أيام ويفضل أن تكون من نابلس\",\n  \"target\": \"offers\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Smart search (materials)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ai/search/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ai",
+                "search",
+                ""
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"أريد قماشًا مناسبًا للتطريز بسعر جيد ويصل خلال يومين\",\n  \"target\": \"materials\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Platform admin",
+      "description": "Login as an admin (is_staff) first.",
+      "item": [
+        {
+          "name": "Platform indicators",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reports/admin/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "admin",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/?q=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": ""
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Suspend / activate user",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/2/set_active/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "2",
+                "set_active",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": false,\n  \"reason\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Business and supplier profiles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/profiles/profiles/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "profiles",
+                "profiles",
+                ""
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Suspend business profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/profiles/business/1/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "profiles",
+                "business",
+                "1",
+                ""
+              ]
+            },
+            "description": "status: active | suspended. Use supplier/{id}/ for suppliers.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"suspended\",\n  \"reason\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Open abuse reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/abuse-reports/?status=open",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "abuse-reports",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "open"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Resolve abuse report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/abuse-reports/1/resolve/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "abuse-reports",
+                "1",
+                "resolve",
+                ""
+              ]
+            },
+            "description": "decision: resolved | dismissed",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"resolved\",\n  \"hide_content\": true,\n  \"note\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Add category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New category\",\n  \"kind\": \"offer\",\n  \"icon\": \"\",\n  \"sort_order\": 0,\n  \"is_active\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

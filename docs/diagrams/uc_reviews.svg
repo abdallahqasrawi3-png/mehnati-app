@@ -1,0 +1,23 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='760' height='440' viewBox='0 0 760 440'>
+  <rect width='760' height='440' fill='#fff'/>
+  <text x='380' y='34.3' font-family='Segoe UI, Arial, sans-serif' font-size='18' font-weight='700' fill='#1E5B3E' text-anchor='middle'>Feature: Reviews, reports and notifications</text>
+  <rect x='170' y='70' width='420' height='350' rx='14' fill='#F7F2E8' stroke='#1E5B3E' stroke-width='1.5'/>
+  <text x='182' y='88' font-family='Segoe UI, Arial, sans-serif' font-size='11.5' fill='#5B6670' font-style='italic'>Mehnaty system</text>
+  <line x1='97' y1='237' x2='262.4' y2='123' stroke='#8A9A92' stroke-width='1.3'/><line x1='97' y1='237' x2='262.4' y2='189' stroke='#8A9A92' stroke-width='1.3'/><line x1='97' y1='237' x2='262.4' y2='255' stroke='#8A9A92' stroke-width='1.3'/><line x1='97' y1='237' x2='262.4' y2='321' stroke='#8A9A92' stroke-width='1.3'/><line x1='663' y1='154.5' x2='497.6' y2='255' stroke='#8A9A92' stroke-width='1.3'/><line x1='663' y1='154.5' x2='497.6' y2='321' stroke='#8A9A92' stroke-width='1.3'/><line x1='663' y1='319.5' x2='497.6' y2='387' stroke='#8A9A92' stroke-width='1.3'/><ellipse cx='380' cy='123' rx='120' ry='25' fill='#E6F0EA' stroke='#1E5B3E' stroke-width='1.5'/><text x='380' y='127.375' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='400' fill='#1F2933' text-anchor='middle'>Rate a completed order (1–5)</text><ellipse cx='380' cy='189' rx='120' ry='25' fill='#E6F0EA' stroke='#1E5B3E' stroke-width='1.5'/><text x='380' y='193.375' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='400' fill='#1F2933' text-anchor='middle'>Edit my review</text><ellipse cx='380' cy='255' rx='120' ry='25' fill='#E6F0EA' stroke='#1E5B3E' stroke-width='1.5'/><text x='380' y='259.375' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='400' fill='#1F2933' text-anchor='middle'>Report bad content</text><ellipse cx='380' cy='321' rx='120' ry='25' fill='#E6F0EA' stroke='#1E5B3E' stroke-width='1.5'/><text x='380' y='325.375' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='400' fill='#1F2933' text-anchor='middle'>Receive in-app notifications</text><ellipse cx='380' cy='387' rx='120' ry='25' fill='#E6F0EA' stroke='#1E5B3E' stroke-width='1.5'/><text x='380' y='391.375' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='400' fill='#1F2933' text-anchor='middle'>Hide content / dismiss report</text>
+  <g stroke='#1E5B3E' stroke-width='2.2' fill='none'>
+    <circle cx='75' cy='215' r='10' fill='#fff'/>
+    <line x1='75' y1='225' x2='75' y2='251'/>
+    <line x1='59' y1='235' x2='91' y2='235'/>
+    <line x1='75' y1='251' x2='63' y2='271'/>
+    <line x1='75' y1='251' x2='87' y2='271'/></g><text x='75' y='295.375' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='600' fill='#1E5B3E' text-anchor='middle'>Customer</text><g stroke='#1E5B3E' stroke-width='2.2' fill='none'>
+    <circle cx='685' cy='132.5' r='10' fill='#fff'/>
+    <line x1='685' y1='142.5' x2='685' y2='168.5'/>
+    <line x1='669' y1='152.5' x2='701' y2='152.5'/>
+    <line x1='685' y1='168.5' x2='673' y2='188.5'/>
+    <line x1='685' y1='168.5' x2='697' y2='188.5'/></g><text x='685' y='205.375' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='600' fill='#1E5B3E' text-anchor='middle'>Home-business</text><text x='685' y='220.375' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='600' fill='#1E5B3E' text-anchor='middle'>owner</text><g stroke='#1E5B3E' stroke-width='2.2' fill='none'>
+    <circle cx='685' cy='297.5' r='10' fill='#fff'/>
+    <line x1='685' y1='307.5' x2='685' y2='333.5'/>
+    <line x1='669' y1='317.5' x2='701' y2='317.5'/>
+    <line x1='685' y1='333.5' x2='673' y2='353.5'/>
+    <line x1='685' y1='333.5' x2='697' y2='353.5'/></g><text x='685' y='377.875' font-family='Segoe UI, Arial, sans-serif' font-size='12.5' font-weight='600' fill='#1E5B3E' text-anchor='middle'>Platform admin</text>
+</svg>

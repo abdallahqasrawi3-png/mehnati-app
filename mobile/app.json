@@ -1,0 +1,52 @@
+{
+  "expo": {
+    "name": "مهنتي",
+    "slug": "mehnaty",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "primaryColor": "#1E5B3E",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "app.mehnaty"
+    },
+    "android": {
+      "package": "app.mehnaty",
+      "adaptiveIcon": {
+        "backgroundColor": "#F7F2E8",
+        "foregroundImage": "./assets/adaptive-icon.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "name": "مهنتي - منصة تمكين المشاريع المنزلية",
+      "shortName": "مهنتي",
+      "lang": "ar",
+      "themeColor": "#1E5B3E",
+      "backgroundColor": "#F7F2E8"
+    },
+    "extra": {
+      "supportsRTL": true,
+      "forcesRTL": true
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-font",
+      ["expo-localization", { "supportsRTL": true, "forcesRTL": true }],
+      [
+        "expo-location",
+        { "locationWhenInUsePermission": "يستخدم التطبيق موقعك فقط عند حفظ عنوان توصيل دقيق، ولا يتتبعك في الخلفية." }
+      ],
+      [
+        "expo-splash-screen",
+        { "image": "./assets/icon.png", "imageWidth": 200, "backgroundColor": "#F7F2E8" }
+      ],
+      [
+        "expo-image-picker",
+        { "photosPermission": "يحتاج التطبيق إلى الصور لإضافة صور منتجاتك وأعمالك." }
+      ]
+    ]
+  }
+}
