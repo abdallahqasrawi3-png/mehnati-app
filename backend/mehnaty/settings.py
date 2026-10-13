@@ -85,6 +85,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "mehnaty.wsgi.application"
 
+def clean_database_url(raw):
+    """Accept common paste mistakes in hosting dashboards:
+    `DATABASE_URL=postgresql://...`, quotes around the value, or Neon's `psql 'postgresql://...'`."""
+    value = (raw or "").strip()
+    if value.lower().startswith("psql "):
+        value = value[5:].strip()
+    head = value.split("://", 1)[0]
+    if "=" in head:  # "DATABASE_URL=postgresql://..."
+        value = value.split("=", 1)[1].strip()
+    return value.strip("'\"").strip()
+
+
 def database_from_url(url):
     """postgresql://user:pass@host:port/name?sslmode=require&... -> Django DATABASES entry.
 
@@ -93,9 +105,15 @@ def database_from_url(url):
     """
     from urllib.parse import parse_qsl, unquote, urlsplit
 
+    url = clean_database_url(url)
     parts = urlsplit(url)
     if parts.scheme not in ("postgres", "postgresql"):
-        raise RuntimeError("DATABASE_URL must start with postgresql://")
+        # Show only the beginning (never the password) to help spot the mistake.
+        start = url.split(":", 1)[0][:15]
+        raise RuntimeError(
+            f"DATABASE_URL must be a link that starts with postgresql:// (yours starts with {start!r}). "
+            "Paste only the link, without quotes, 'psql' or 'DATABASE_URL='."
+        )
     pooled = "-pooler" in (parts.hostname or "")
     return {
         "ENGINE": "django.db.backends.postgresql",
