@@ -27,18 +27,25 @@ function PortBusy([int]$p) { [bool](Get-NetTCPConnection -LocalPort $p -State Li
 
 # ---------- tools
 foreach ($tool in @('node', 'npm')) { if (-not (Get-Command $tool -ErrorAction SilentlyContinue)) { Fail "$tool is not installed. Install Node.js LTS: winget install OpenJS.NodeJS.LTS" } }
-$PgBin = $env:MEHNATY_PG_BIN
-if (-not $PgBin) {
-  $PgBin = Get-ChildItem 'C:\Program Files\PostgreSQL' -Directory -ErrorAction SilentlyContinue |
-    Sort-Object { [int]($_.Name -replace '\D', '') } -Descending | ForEach-Object { Join-Path $_.FullName 'bin' } |
-    Where-Object { Test-Path (Join-Path $_ 'pg_ctl.exe') } | Select-Object -First 1
-}
-if (-not $PgBin) { Fail 'PostgreSQL is not installed. Install it: winget install PostgreSQL.PostgreSQL.17' }
+# A DATABASE_URL in backend\.env (e.g. Neon) means a cloud database: no local PostgreSQL needed.
+$EnvFile = Join-Path $Backend '.env'
+$CloudDb = (Test-Path $EnvFile) -and [bool](Select-String -Path $EnvFile -Pattern '^\s*DATABASE_URL\s*=\s*\S' -Quiet)
 
 # ---------- database
-Step 'PostgreSQL'
-& (Join-Path $Root 'scripts\setup_db.ps1') -PgBin $PgBin
-if ($LASTEXITCODE -ne 0) { Fail 'Database setup failed (see messages above).' }
+if ($CloudDb) {
+  Step 'Database: cloud (DATABASE_URL in backend\.env) - local PostgreSQL not started'
+} else {
+  $PgBin = $env:MEHNATY_PG_BIN
+  if (-not $PgBin) {
+    $PgBin = Get-ChildItem 'C:\Program Files\PostgreSQL' -Directory -ErrorAction SilentlyContinue |
+      Sort-Object { [int]($_.Name -replace '\D', '') } -Descending | ForEach-Object { Join-Path $_.FullName 'bin' } |
+      Where-Object { Test-Path (Join-Path $_ 'pg_ctl.exe') } | Select-Object -First 1
+  }
+  if (-not $PgBin) { Fail 'PostgreSQL is not installed. Install it: winget install PostgreSQL.PostgreSQL.17' }
+  Step 'PostgreSQL (local)'
+  & (Join-Path $Root 'scripts\setup_db.ps1') -PgBin $PgBin
+  if ($LASTEXITCODE -ne 0) { Fail 'Database setup failed (see messages above).' }
+}
 
 # ---------- backend
 Step 'Python backend'

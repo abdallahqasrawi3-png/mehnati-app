@@ -85,6 +85,12 @@ Answers from the owner (2026-10-12) and the technical choices made. Change any r
 - **Expo SDK 57** (React Native 0.86, React 19.2), React Navigation 7, locked in `mobile/package-lock.json`. Packages were installed with `npx expo install` so the versions match the SDK.
 - **RTL**: `forcesRTL` in `app.json` + `I18nManager.forceRTL`, `dir="rtl"` on the web document. If a phone still reports LTR (Expo Go SDK 57 may ignore the setting), shared components flip rows and alignment (`FLIP` in `src/ui.tsx`).
 - **PostgreSQL cluster**: the EDB installer's `initdb` step failed on this Windows machine (locale problem). The app therefore uses its own user-owned cluster in `%LOCALAPPDATA%\Mehnaty\pgdata` (locale C, UTF-8), created and started by `scripts/setup_db.ps1`. No admin rights are needed after PostgreSQL's binaries are installed.
+- **Cloud database (2026-10-13)**: the owner moved the app to a Neon PostgreSQL database (eu-central-1, pooled endpoint).
+  - The connection string lives only in `backend/.env` as `DATABASE_URL`, and `settings.py` parses it.
+  - Pooled hosts disable server-side cursors (PgBouncer transaction mode) and keep persistent connections (`CONN_MAX_AGE=60`, with health checks); reconnecting per request cost 1.5–5 s.
+  - Local data, including the owner's admin account and the demo data, was copied with `dumpdata`/`loaddata`; ID sequences were checked.
+  - `start.bat` skips the local PostgreSQL when `DATABASE_URL` is set. Tests run locally with `USE_LOCAL_DB=1`.
+  - Uploaded images still live in `backend/media` on this computer; the database only stores their paths.
 - **Concurrency**: stock changes lock the row (`SELECT … FOR UPDATE`) inside a transaction, and order items are locked in sorted id order to avoid deadlocks. DB `CHECK` constraints forbid negative stock and reserved > stock.
 - **Arabic search**: tolerant regex for أ/ا/إ/آ, ة/ه, ى/ي and diacritics. A trailing ة/ه is ignored, so «مطرزة» also finds «مطرز».
 - **AI**: the separate module `ai_assistant/provider.py` holds the only external connection. Model `claude-opus-5-5` (configurable with `AI_MODEL`) uses structured JSON output and server-side refusal fallback (`fallbacks: "default"`).

@@ -60,7 +60,10 @@ export default function App() {
       <ToastProvider>
         <AuthProvider>
           <CartProvider>
-            <NavigationContainer theme={theme} linking={linking as any} documentTitle={{ formatter: (o, r) => (o?.title ? `${o.title} | مهنتي` : 'مهنتي') }}>
+            <NavigationContainer theme={theme} linking={linking as any} documentTitle={{
+              // Site name first: «مهنتي · حسابي»; home shows the tagline.
+              formatter: (o) => (!o?.title || o.title === 'الرئيسية' ? 'مهنتي · منصة تمكين المشاريع المنزلية' : `مهنتي · ${o.title}`),
+            }}>
               <StatusBar style="light" />
               <RootNavigator />
             </NavigationContainer>

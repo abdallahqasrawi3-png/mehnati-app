@@ -1,4 +1,5 @@
-# secrets
+# secrets / private data
+backend/core/demo_data_private.py
 .env
 .env.bak
 backend/.env*
@@ -9,7 +10,10 @@ backend/.venv/
 __pycache__/
 *.pyc
 backend/staticfiles/
-backend/media/
+# Uploaded files stay out of git, except the generated demo images used by the demo data.
+backend/media/**
+!backend/media/*/
+!backend/media/**/demo_*.jpg
 
 # node / expo
 mobile/node_modules/

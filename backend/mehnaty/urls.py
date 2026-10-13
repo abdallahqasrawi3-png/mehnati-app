@@ -78,6 +78,6 @@ urlpatterns = [
     path("api/", include(api)),
 ]
 
-if settings.DEBUG:
-    # Development only; in production serve /media from the web server (never executed).
+if settings.SERVE_MEDIA:
+    # Development, or hosts without a file server (SERVE_MEDIA=true). Files are served, never executed.
     urlpatterns += [path("media/<path:path>", serve, {"document_root": settings.MEDIA_ROOT})]

@@ -46,11 +46,13 @@ Press **Ctrl+C** to stop the app and the API. PostgreSQL keeps running; to stop 
 ## Demo data (optional, clearly marked «[تجريبي]»)
 `.\start.bat -Demo` creates demo accounts ending in `@demo.mehnaty.test`. They all share the password `DEMO_PASSWORD` defined in `backend/core/management/commands/seed_demo.py`.
 
+The businesses and suppliers come from the table of Jenin home businesses in `backend/core/demo_data.py` (17 businesses, 7 sales channels/suppliers). Products and prices are illustrative and labelled «سعر تجريبي للعرض». No reviews are generated.
+
 | Account | Role |
 |---------|------|
 | `customer@…`, `customer2@…` | customers |
-| `embroidery@…`, `kitchen@…`, `art@…` | home-business owners |
-| `supplier@…`, `supplier2@…` | suppliers |
+| `owner01@…` … `owner17@…` | home-business owners, in the table's order (e.g. `owner02@…` = Emy Chocolate) |
+| `supplier-sanabel@…`, `supplier-karim@…`, `supplier-bonbony@…`, `supplier-caramel@…`, `supplier-glass@…`, `supplier-needle@…`, `supplier-mad@…` | suppliers |
 | `admin@…` | platform administrator |
 
 To remove all demo data:
@@ -65,10 +67,14 @@ backend\.venv\Scripts\python.exe backend\manage.py createsuperuser
 It asks for an email, full name and password. Sign in with that account at `/admin/`, or in the app (Account → لوحة مدير المنصة).
 
 ## Run the tests
+The tests create a temporary test database. Run them on the local PostgreSQL (fast, offline) by setting `USE_LOCAL_DB=1` first, even when the app uses a cloud database:
+```bash
+$env:USE_LOCAL_DB = '1'
+```
 ```bash
 backend\.venv\Scripts\python.exe backend\manage.py test
 ```
-The backend has 68 tests: accounts, permissions, catalog, search, orders, concurrent stock, shipping, reviews, reports and AI.
+The backend has 73 tests: accounts and addresses, permissions, catalog, search, orders, concurrent stock, shipping, reviews, reports and AI. The local PostgreSQL must be running; `scripts\setup_db.ps1` starts it.
 
 Typecheck the app (from the `mobile` folder):
 ```bash
@@ -79,7 +85,9 @@ npx tsc --noEmit
 | Variable | Meaning |
 |----------|---------|
 | `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS` | Django basics (in production: DEBUG=false, real hosts, HTTPS) |
-| `DB_*` | PostgreSQL connection |
+| `DATABASE_URL` | Cloud database such as Neon (`postgresql://…?sslmode=require`). When set, it is used instead of `DB_*`, and `start.bat` does not start a local PostgreSQL. Comment it out to go back to the local database. |
+| `DB_*` | Local PostgreSQL connection (used when `DATABASE_URL` is not set) |
+| `USE_LOCAL_DB=1` | Environment variable that forces the local database (for the tests) |
 | `ANTHROPIC_API_KEY`, `AI_MODEL` | Optional Claude assistant. Without a key, the built-in rule-based assistant is used. |
 | `SHIPPING_SIMULATOR_ENABLED` | Test-only fake carrier. Keep it `false`. |
 | `MAX_IMAGE_UPLOAD_MB`, `CORS_ALLOWED_ORIGINS`, `JWT_*` | Uploads, allowed web origins, token lifetimes |

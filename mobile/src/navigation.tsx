@@ -71,15 +71,16 @@ function MainTabs() {
         ...headerOptions,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.muted,
-        tabBarLabelStyle: { fontFamily: fonts.semibold, fontSize: 11 },
-        tabBarStyle: { backgroundColor: colors.card, borderTopColor: colors.border, height: 62, paddingBottom: 8, paddingTop: 4 },
+        // Cairo is taller than the system font: give labels room so they are not clipped.
+        tabBarLabelStyle: { fontFamily: fonts.semibold, fontSize: 11, lineHeight: 18 },
+        tabBarStyle: { backgroundColor: colors.card, borderTopColor: colors.border, height: 68, paddingBottom: 10, paddingTop: 6 },
       }}
     >
       <Tabs.Screen name="Home" component={HomeScreen} options={{ title: 'الرئيسية', headerShown: false, tabBarIcon: (p) => <Ionicons name="home-outline" {...p} /> }} />
       <Tabs.Screen name="Search" component={SearchScreen} options={{ title: 'البحث', tabBarIcon: (p) => <Ionicons name="search-outline" {...p} /> }} />
       <Tabs.Screen name="Materials" component={MaterialsScreen} options={{ title: 'المواد الخام', tabBarIcon: (p) => <Ionicons name="layers-outline" {...p} /> }} />
       <Tabs.Screen name="Cart" component={CartScreen} options={{ title: 'السلة', tabBarIcon: (p) => <CartIcon {...p} /> }} />
-      <Tabs.Screen name="Account" component={AccountScreen} options={{ title: 'حسابي', tabBarIcon: (p) => <Ionicons name="person-circle-outline" {...p} /> }} />
+      <Tabs.Screen name="Account" component={AccountScreen} options={{ title: 'حسابي', headerShown: false, tabBarIcon: (p) => <Ionicons name="person-circle-outline" {...p} /> }} />
     </Tabs.Navigator>
   );
 }
@@ -95,7 +96,7 @@ export default function RootNavigator() {
       <Stack.Screen name="Compare" component={CompareScreen} options={{ title: 'المقارنة' }} />
       <Stack.Screen name="Material" component={MaterialScreen} options={{ title: 'تفاصيل المادة الخام' }} />
       <Stack.Screen name="Supplier" component={SupplierScreen} options={{ title: 'صفحة المورد' }} />
-      <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'تسجيل الدخول' }} />
+      <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'تسجيل الدخول', headerShown: false }} />
       <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'إنشاء حساب' }} />
       <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: 'بياناتي' }} />
       <Stack.Screen name="Addresses" component={AddressesScreen} options={{ title: 'عناويني' }} />

@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # serves /static (admin CSS/JS) in production
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -84,17 +85,50 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "mehnaty.wsgi.application"
 
-DATABASES = {
-    "default": {
+def database_from_url(url):
+    """postgresql://user:pass@host:port/name?sslmode=require&... -> Django DATABASES entry.
+
+    Query parameters (sslmode, channel_binding, ...) are passed to the driver. Hosts with
+    "-pooler" (Neon's PgBouncer) disable server-side cursors, which transaction pooling can't hold.
+    """
+    from urllib.parse import parse_qsl, unquote, urlsplit
+
+    parts = urlsplit(url)
+    if parts.scheme not in ("postgres", "postgresql"):
+        raise RuntimeError("DATABASE_URL must start with postgresql://")
+    pooled = "-pooler" in (parts.hostname or "")
+    return {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME", "mehnaty"),
-        "USER": os.getenv("DB_USER", "mehnaty"),
-        "PASSWORD": os.getenv("DB_PASSWORD", ""),
-        "HOST": os.getenv("DB_HOST", "localhost"),
-        "PORT": os.getenv("DB_PORT", "5432"),
+        "NAME": unquote(parts.path.lstrip("/")),
+        "USER": unquote(parts.username or ""),
+        "PASSWORD": unquote(parts.password or ""),
+        "HOST": parts.hostname or "",
+        "PORT": str(parts.port or 5432),
+        "OPTIONS": dict(parse_qsl(parts.query)),
+        # Keep connections open between requests: a new TLS connection to a cloud database costs
+        # hundreds of milliseconds. Behind a pooler (transaction mode), avoid server-side cursors.
         "CONN_MAX_AGE": 60,
+        "CONN_HEALTH_CHECKS": True,
+        "DISABLE_SERVER_SIDE_CURSORS": pooled,
     }
-}
+
+
+# DATABASE_URL (e.g. a Neon cloud database) takes priority; otherwise the local DB_* settings.
+# USE_LOCAL_DB=1 forces the local database (handy for running the test suite offline and fast).
+if os.getenv("DATABASE_URL", "").strip() and os.getenv("USE_LOCAL_DB") != "1":
+    DATABASES = {"default": database_from_url(os.getenv("DATABASE_URL").strip())}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DB_NAME", "mehnaty"),
+            "USER": os.getenv("DB_USER", "mehnaty"),
+            "PASSWORD": os.getenv("DB_PASSWORD", ""),
+            "HOST": os.getenv("DB_HOST", "localhost"),
+            "PORT": os.getenv("DB_PORT", "5432"),
+            "CONN_MAX_AGE": 60,
+        }
+    }
 
 AUTH_USER_MODEL = "accounts.User"
 
@@ -115,6 +149,17 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT", BASE_DIR / "media"))
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    # Compressed, cache-busted static files served by WhiteNoise (run collectstatic on deploy).
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage" if DEBUG
+        else "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    },
+}
+# Hosting without a separate file server (e.g. Render): let Django serve uploaded images.
+# Note: such disks are often temporary; use persistent storage for real deployments.
+SERVE_MEDIA = DEBUG or env_bool("SERVE_MEDIA", False)
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -157,10 +202,13 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = env_list("CORS_ALLOWED_ORIGINS", "http://localhost:8081,http://127.0.0.1:8081")
 CORS_ALLOW_ALL_ORIGINS = DEBUG and env_bool("CORS_ALLOW_ALL_IN_DEBUG", True)
+# HTTPS origins allowed to submit forms (Django admin login), e.g. https://mehnati-api.onrender.com
+CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS", "")
 
 # Production hardening (HTTPS)
 if not DEBUG:
     SECURE_SSL_REDIRECT = env_bool("SECURE_SSL_REDIRECT", True)
+    SECURE_REDIRECT_EXEMPT = [r"^api/health/$"]  # hosting health checks call this over plain HTTP
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "31536000"))
