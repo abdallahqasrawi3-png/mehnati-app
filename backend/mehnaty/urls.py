@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.http import JsonResponse
 from django.urls import include, path
+from django.views.generic import RedirectView
 from django.views.static import serve
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -74,6 +75,7 @@ api = [
 ]
 
 urlpatterns = [
+    path("", RedirectView.as_view(url="/api/", permanent=False)),  # bare domain -> API index
     path("admin/", admin.site.urls),
     path("api/", include(api)),
 ]
