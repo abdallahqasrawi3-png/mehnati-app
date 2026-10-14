@@ -14,6 +14,7 @@ backend/staticfiles/
 backend/media/**
 !backend/media/*/
 !backend/media/**/demo_*.jpg
+!backend/media/**/store_*.jpg
 
 # node / expo
 mobile/node_modules/
