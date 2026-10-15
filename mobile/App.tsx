@@ -30,7 +30,7 @@ const linking = {
       Main: { screens: { Home: '', Search: 'search', Materials: 'materials', Cart: 'cart', Account: 'account' } },
       SmartSearch: 'assistant', Categories: 'categories', Offer: 'offer/:id', Business: 'business/:id',
       Compare: 'compare', Material: 'material/:id', Supplier: 'supplier/:id', Login: 'login', Register: 'register',
-      Profile: 'profile', Addresses: 'addresses', Notifications: 'notifications', Orders: 'orders/:kind/:role',
+      Profile: 'profile', Addresses: 'addresses', Notifications: 'notifications', ContactAdmin: 'contact', Orders: 'orders/:kind/:role',
       Order: 'order/:kind/:id', Shipments: 'shipments', Shipment: 'shipment/:id', BusinessEdit: 'my/business',
       MyOffers: 'my/offers', OfferEdit: 'my/offer/:id?', BusinessReports: 'my/reports', SupplierEdit: 'my/supplier',
       MyMaterials: 'my/materials', MaterialEdit: 'my/material/:id?', SupplierReports: 'my/supplier-reports', Admin: 'admin',

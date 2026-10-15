@@ -42,6 +42,7 @@ router.register("expenses", rep.ExpenseViewSet, basename="expense")
 router.register("abuse-reports", core.AbuseReportViewSet, basename="abuse-report")
 router.register("admin/users", acc.AdminUserViewSet, basename="admin-user")
 router.register("admin/abuse-reports", core.AdminAbuseReportViewSet, basename="admin-abuse-report")
+router.register("admin/contact-messages", core.AdminContactMessageViewSet, basename="admin-contact-message")
 router.register("admin/profiles", core.AdminProfileStatusViewSet, basename="admin-profile")
 
 
@@ -58,6 +59,7 @@ api = [
     path("auth/me/", acc.MeView.as_view()),
     path("auth/change-password/", acc.ChangePasswordView.as_view()),
     path("cities/", acc.CityListView.as_view()),
+    path("contact-admin/", core.ContactAdminView.as_view()),
     path("my/business/", cat.MyBusinessView.as_view()),
     path("my/business/logo/", cat.MyBusinessLogoView.as_view()),
     path("my/business/images/", cat.MyBusinessImagesView.as_view()),

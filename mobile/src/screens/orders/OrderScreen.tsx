@@ -238,6 +238,9 @@ export default function OrderScreen({ route, navigation }: any) {
       ) : null}
       {kind === 'sales' && o.can_review ? <ReviewForm orderId={o.id} onDone={reload} /> : null}
 
+      <Button title="مشكلة في هذا الطلب؟ أبلغ الإدارة" variant="ghost" icon="chatbubbles-outline"
+        onPress={() => navigation.navigate('ContactAdmin', { kind: 'order', order: o.id })} />
+
       <SectionTitle title="سجل الحالات" />
       <Card>
         {o.status_logs.map((l: any, i: number) => (

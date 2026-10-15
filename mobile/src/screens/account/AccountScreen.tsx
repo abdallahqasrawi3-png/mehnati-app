@@ -126,6 +126,7 @@ export default function AccountScreen({ navigation }: any) {
           <View style={{ backgroundColor: colors.card, borderRadius: radius.lg, padding: space.lg, gap: space.md, borderWidth: 1, borderColor: colors.border, ...shadow }}>
             <Button title="تسجيل الدخول" icon="log-in-outline" onPress={go('Login')} />
             <Button title="إنشاء حساب جديد" variant="outline" icon="person-add-outline" onPress={go('Register')} />
+            <Button title="تواصل مع الإدارة للإبلاغ" variant="ghost" icon="chatbubbles-outline" onPress={go('ContactAdmin')} />
           </View>
         </View>
       </View>
@@ -190,6 +191,7 @@ export default function AccountScreen({ navigation }: any) {
               {tile({ icon: 'car-outline', title: 'الشحنات', onPress: go('Shipments') })}
               {tile({ icon: 'location-outline', title: 'عناويني', onPress: go('Addresses') })}
               {tile({ icon: 'person-outline', title: 'بياناتي وكلمة المرور', onPress: go('Profile') })}
+              {tile({ icon: 'chatbubbles-outline', title: 'تواصل مع الإدارة للإبلاغ', onPress: go('ContactAdmin'), tone: 'gold' })}
             </Section>
 
             <Section title="مشروعي المنزلي" subtitle={hasBiz ? 'منتجاتك وطلبات عملائك ومبيعاتك' : undefined}>

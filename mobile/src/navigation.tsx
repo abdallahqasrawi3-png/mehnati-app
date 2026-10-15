@@ -24,6 +24,7 @@ import AccountScreen from './screens/account/AccountScreen';
 import ProfileScreen from './screens/account/ProfileScreen';
 import AddressesScreen from './screens/account/AddressesScreen';
 import NotificationsScreen from './screens/account/NotificationsScreen';
+import ContactAdminScreen from './screens/account/ContactAdminScreen';
 import OrdersScreen from './screens/orders/OrdersScreen';
 import OrderScreen from './screens/orders/OrderScreen';
 import ShipmentsScreen from './screens/orders/ShipmentsScreen';
@@ -101,6 +102,7 @@ export default function RootNavigator() {
       <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: 'بياناتي' }} />
       <Stack.Screen name="Addresses" component={AddressesScreen} options={{ title: 'عناويني' }} />
       <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ title: 'الإشعارات' }} />
+      <Stack.Screen name="ContactAdmin" component={ContactAdminScreen} options={{ title: 'تواصل مع الإدارة' }} />
       <Stack.Screen name="Orders" component={OrdersScreen} options={{ title: 'الطلبات' }} />
       <Stack.Screen name="Order" component={OrderScreen} options={{ title: 'تفاصيل الطلب' }} />
       <Stack.Screen name="Shipments" component={ShipmentsScreen} options={{ title: 'الشحنات' }} />

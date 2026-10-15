@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import AbuseReport, Area, AuditLog, City
+from .models import AbuseReport, Area, AuditLog, City, ContactMessage
 
 
 class AreaInline(admin.TabularInline):
@@ -36,3 +36,11 @@ class AuditLogAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ["id", "kind", "name", "phone", "status", "created_at"]
+    list_filter = ["status", "kind"]
+    search_fields = ["name", "phone", "message", "order_ref"]
+    readonly_fields = ["user", "name", "phone", "kind", "order_ref", "message", "created_at"]

@@ -37,6 +37,46 @@ function Indicators() {
   );
 }
 
+function ContactMessages() {
+  const toast = useToast();
+  const [status, setStatus] = useState('open');
+  const { data, error, loading, reload } = useApi<Paged<any>>('/admin/contact-messages/', { status });
+  const resolve = async (id: number) => {
+    if (!(await confirm('تعليم الرسالة كمعالجة؟'))) return;
+    try {
+      await api(`/admin/contact-messages/${id}/resolve/`, { method: 'POST', body: {} });
+      toast('تم تحديث الرسالة.');
+      reload();
+    } catch (e) {
+      toast(e instanceof ApiError ? e.message : 'تعذر التحديث', 'error');
+    }
+  };
+  const wa = (phone: string) => `https://wa.me/${phone.replace(/\D/g, '').replace(/^0/, '970')}`;
+  return (
+    <>
+      <Chips options={[{ value: 'open', label: 'جديدة' }, { value: 'resolved', label: 'معالجة' }]} value={status} onChange={(v) => v && setStatus(v)} />
+      {loading && !data ? <Loading /> : error ? <ErrorView message={error} onRetry={reload} /> : !data?.results.length ? (
+        <Empty icon="chatbubbles-outline" title="لا توجد رسائل" />
+      ) : data.results.map((m) => (
+        <Card key={m.id}>
+          <Row style={{ justifyContent: 'space-between' }}>
+            <T weight="bold">#{m.id} · {m.kind_display}</T>
+            <Badge text={m.status_display} tone={m.status === 'open' ? 'warning' : 'success'} />
+          </Row>
+          <T>{m.message}</T>
+          <T size={12} color={colors.muted}>
+            {m.name}{m.phone ? ` · ${m.phone}` : ''}{m.email ? ` · ${m.email}` : ''}{m.order_ref ? ` · طلب #${m.order_ref}` : ''} · {dateText(m.created_at)}
+          </T>
+          <Row wrap>
+            {m.phone ? <Button small variant="outline" icon="logo-whatsapp" title="مراسلة المُبلِّغ" onPress={() => Linking.openURL(wa(m.phone))} /> : null}
+            {m.status === 'open' ? <Button small title="تمت المعالجة" icon="checkmark-done-outline" onPress={() => resolve(m.id)} /> : null}
+          </Row>
+        </Card>
+      ))}
+    </>
+  );
+}
+
 function Reports() {
   const toast = useToast();
   const [status, setStatus] = useState('open');
@@ -134,8 +174,8 @@ export default function AdminScreen() {
   const [tab, setTab] = useState('indicators');
   return (
     <Screen>
-      <Chips options={[{ value: 'indicators', label: 'المؤشرات' }, { value: 'reports', label: 'البلاغات' }, { value: 'users', label: 'الحسابات' }]} value={tab} onChange={(v) => v && setTab(v)} />
-      {tab === 'indicators' ? <Indicators /> : tab === 'reports' ? <Reports /> : <Users />}
+      <Chips options={[{ value: 'indicators', label: 'المؤشرات' }, { value: 'reports', label: 'البلاغات' }, { value: 'contact', label: 'رسائل التواصل' }, { value: 'users', label: 'الحسابات' }]} value={tab} onChange={(v) => v && setTab(v)} />
+      {tab === 'indicators' ? <Indicators /> : tab === 'reports' ? <Reports /> : tab === 'contact' ? <ContactMessages /> : <Users />}
       <Notice text="لإدارة التصنيفات والمدن وشركات التوصيل وسجل العمليات الإدارية استخدم لوحة Django الإدارية." />
       <Button variant="outline" icon="open-outline" title="فتح لوحة الإدارة (Django)" onPress={() => Linking.openURL(`${SERVER_URL}/admin/`)} />
     </Screen>

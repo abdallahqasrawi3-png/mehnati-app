@@ -82,3 +82,41 @@ class AbuseReport(models.Model):
 
     def __str__(self):
         return f"{self.get_target_type_display()} #{self.target_id}"
+
+
+class ContactMessage(models.Model):
+    """A report or question sent to the platform administrator from the app's contact form.
+    Saved here (admin dashboard) and also handed to the admin's WhatsApp by the sender."""
+
+    class Kind(models.TextChoices):
+        PROBLEM = "problem", "مشكلة في التطبيق"
+        ABUSE = "abuse", "بلاغ عن محتوى أو مستخدم"
+        ORDER = "order", "شكوى على طلب"
+        SUGGESTION = "suggestion", "اقتراح"
+        OTHER = "other", "أخرى"
+
+    class Status(models.TextChoices):
+        OPEN = "open", "جديد"
+        RESOLVED = "resolved", "تمت المعالجة"
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="contact_messages", verbose_name="المستخدم",
+    )
+    name = models.CharField("الاسم", max_length=120)
+    phone = models.CharField("الهاتف", max_length=30, blank=True)
+    kind = models.CharField("نوع البلاغ", max_length=20, choices=Kind.choices, default=Kind.PROBLEM)
+    order_ref = models.CharField("رقم الطلب", max_length=30, blank=True)
+    message = models.TextField("الرسالة", max_length=2000)
+    status = models.CharField("الحالة", max_length=20, choices=Status.choices, default=Status.OPEN)
+    admin_note = models.TextField("ملاحظة الإدارة", blank=True)
+    created_at = models.DateTimeField("وقت الإرسال", auto_now_add=True)
+    resolved_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "رسالة إلى الإدارة"
+        verbose_name_plural = "رسائل التواصل مع الإدارة"
+
+    def __str__(self):
+        return f"#{self.pk} {self.get_kind_display()} - {self.name}"

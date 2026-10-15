@@ -203,6 +203,7 @@ REST_FRAMEWORK = {
         "user": os.getenv("THROTTLE_USER", "1200/min"),
         "auth": os.getenv("THROTTLE_AUTH", "20/min"),
         "ai": os.getenv("THROTTLE_AI", "30/min"),
+        "contact": os.getenv("THROTTLE_CONTACT", "10/hour"),
     },
     "EXCEPTION_HANDLER": "core.exceptions.api_exception_handler",
 }
@@ -238,6 +239,10 @@ X_FRAME_OPTIONS = "DENY"
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 AI_MODEL = os.getenv("AI_MODEL", "claude-opus-5-5")
 AI_TIMEOUT_SECONDS = float(os.getenv("AI_TIMEOUT_SECONDS", "30"))
+
+# Administrator's WhatsApp for the "contact the administrator" form (international format, digits only).
+# Accepts 00972..., +972... or 972...; reports open WhatsApp with the details pre-filled for this number.
+ADMIN_WHATSAPP = "".join(ch for ch in os.getenv("ADMIN_WHATSAPP", "972569228977") if ch.isdigit()).removeprefix("00")
 
 # Shipping: the simulator is for tests/demo only and is never a real carrier.
 SHIPPING_SIMULATOR_ENABLED = env_bool("SHIPPING_SIMULATOR_ENABLED", False)

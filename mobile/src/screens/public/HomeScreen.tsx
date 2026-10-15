@@ -132,6 +132,17 @@ export default function HomeScreen({ navigation }: any) {
             ))}
           </ScrollView>
         )}
+
+        <Card onPress={() => navigation.navigate('ContactAdmin')} style={{ marginTop: space.md, backgroundColor: colors.goldSoft, borderColor: colors.gold }}>
+          <Row>
+            <Ionicons name="chatbubbles-outline" size={26} color="#7A5A2B" />
+            <View style={{ flex: 1 }}>
+              <T weight="bold">واجهت مشكلة أو محتوى مخالفًا؟</T>
+              <T size={13} color={colors.muted}>تواصل مع الإدارة للإبلاغ، ويصل بلاغك إلى واتساب الإدارة.</T>
+            </View>
+            <Ionicons name="chevron-back" size={20} color="#7A5A2B" />
+          </Row>
+        </Card>
       </View>
     </ScrollView>
   );

@@ -1,15 +1,20 @@
+from urllib.parse import quote
+
+from django.conf import settings
 from django.utils import timezone
 from rest_framework import mixins, permissions, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
+from rest_framework.views import APIView
 
 from catalog.models import BusinessProfile, Offer
 from reviews.models import Review, refresh_business_rating
 from suppliers.models import Material, SupplierProfile
 
 from .audit import audit
-from .models import AbuseReport
+from .models import AbuseReport, ContactMessage
 from .permissions import IsPlatformAdmin
 
 TARGET_MODELS = {
@@ -141,3 +146,87 @@ class AdminProfileStatusViewSet(viewsets.ViewSet):
             for s in SupplierProfile.objects.select_related("owner").order_by("-created_at")[:200]
         ]
         return Response(data)
+
+
+# ---------------------------------------------------------------- contact the administrator
+class ContactMessageSerializer(serializers.ModelSerializer):
+    kind_display = serializers.CharField(source="get_kind_display", read_only=True)
+    status_display = serializers.CharField(source="get_status_display", read_only=True)
+    email = serializers.CharField(source="user.email", read_only=True, default=None)
+
+    class Meta:
+        model = ContactMessage
+        fields = [
+            "id", "name", "phone", "email", "kind", "kind_display", "order_ref", "message",
+            "status", "status_display", "admin_note", "created_at", "resolved_at",
+        ]
+        read_only_fields = ["status", "admin_note", "created_at", "resolved_at"]
+
+    def validate_message(self, value):
+        value = value.strip()
+        if len(value) < 10:
+            raise serializers.ValidationError("اكتب تفاصيل البلاغ (10 أحرف على الأقل).")
+        return value
+
+    def validate_name(self, value):
+        value = value.strip()
+        if len(value) < 2:
+            raise serializers.ValidationError("اكتب اسمك.")
+        return value
+
+
+def whatsapp_text(msg):
+    lines = [
+        "📢 بلاغ جديد من تطبيق مهنتي",
+        f"رقم البلاغ: #{msg.pk}",
+        f"النوع: {msg.get_kind_display()}",
+        f"الاسم: {msg.name}",
+    ]
+    if msg.phone:
+        lines.append(f"الهاتف: {msg.phone}")
+    if msg.user_id:
+        lines.append(f"البريد: {msg.user.email}")
+    if msg.order_ref:
+        lines.append(f"رقم الطلب: {msg.order_ref}")
+    lines += ["", "التفاصيل:", msg.message]
+    return "\n".join(lines)
+
+
+class ContactAdminView(APIView):
+    """Anyone (visitor or signed-in user) can send a report to the administrator.
+    The report is saved, and the response carries a WhatsApp link with the details pre-filled."""
+
+    permission_classes = [permissions.AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "contact"
+
+    def post(self, request):
+        ser = ContactMessageSerializer(data=request.data)
+        ser.is_valid(raise_exception=True)
+        user = request.user if request.user.is_authenticated else None
+        msg = ser.save(user=user)
+        return Response({
+            "id": msg.pk,
+            "detail": f"تم استلام بلاغك رقم #{msg.pk}.",
+            "whatsapp_url": f"https://wa.me/{settings.ADMIN_WHATSAPP}?text={quote(whatsapp_text(msg))}",
+        }, status=201)
+
+
+class AdminContactMessageViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    serializer_class = ContactMessageSerializer
+    permission_classes = [IsPlatformAdmin]
+
+    def get_queryset(self):
+        qs = ContactMessage.objects.select_related("user")
+        st = self.request.query_params.get("status")
+        return qs.filter(status=st) if st else qs
+
+    @action(detail=True, methods=["post"])
+    def resolve(self, request, pk=None):
+        msg = ContactMessage.objects.get(pk=pk)
+        msg.status = ContactMessage.Status.RESOLVED
+        msg.admin_note = str(request.data.get("note", ""))[:1000]
+        msg.resolved_at = timezone.now()
+        msg.save(update_fields=["status", "admin_note", "resolved_at"])
+        audit(request.user, "resolve_contact_message", msg)
+        return Response(ContactMessageSerializer(msg).data)
