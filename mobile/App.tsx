@@ -19,6 +19,12 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
   document.documentElement.dir = 'rtl';
   document.documentElement.lang = 'ar';
   document.title = 'مهنتي';
+  // Opened via public/404.html (static host without rewrite rules): restore the requested page.
+  // Only same-site paths are accepted, so ?r= can't redirect to another website.
+  const requested = new URLSearchParams(window.location.search).get('r');
+  if (requested && requested.startsWith('/') && !requested.startsWith('//')) {
+    window.history.replaceState(null, '', requested);
+  }
 }
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
