@@ -75,7 +75,7 @@ export default function HomeScreen({ navigation }: any) {
                 <Ionicons name="sparkles" size={22} color="#fff" />
                 <View style={{ flex: 1 }}>
                   <T weight="bold" color="#fff">المساعد الذكي</T>
-                  <T size={12} color="#fff">اكتب طلبك بكلماتك: «هدية مطرزة بأقل من 100 شيكل من نابلس»</T>
+                  <T size={12} color="#fff">اكتب طلبك بكلماتك: «هدية مطرزة بأقل من 100 شيكل من جنين»</T>
                 </View>
                 <Ionicons name="chevron-back" size={20} color="#fff" />
               </Row>
