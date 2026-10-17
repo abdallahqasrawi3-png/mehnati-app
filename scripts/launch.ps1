@@ -104,6 +104,12 @@ if (-not $RemoteApi) {
   $api = Start-Process -FilePath $Py -ArgumentList 'manage.py', 'runserver', "0.0.0.0:$ApiPort", '--noreload' -WorkingDirectory $Backend -PassThru -WindowStyle Minimized
 }
 
+# Expo can fall back to 127.0.0.1 (e.g. when it can't reach expo.dev), which a phone can't open: give it the Wi-Fi/LAN address.
+if (-not $env:REACT_NATIVE_PACKAGER_HOSTNAME) {
+  $lan = Get-NetIPConfiguration -ErrorAction SilentlyContinue | Where-Object { $_.IPv4DefaultGateway -and $_.NetAdapter.Status -eq 'Up' } |
+    ForEach-Object { $_.IPv4Address.IPAddress } | Select-Object -First 1
+  if ($lan) { $env:REACT_NATIVE_PACKAGER_HOSTNAME = $lan }
+}
 Step "Starting the app. Web: http://localhost:$WebPort   Android: scan the QR code with Expo Go (same Wi-Fi). Press Ctrl+C to stop."
 Push-Location $Mobile
 try {
